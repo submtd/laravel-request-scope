@@ -1,0 +1,23 @@
+{
+    "name": "submtd/laravel-request-scope",
+    "description": "Adds sorting, filtering and other options as query parameters to Laravel apps.",
+    "authors": [
+        {
+            "name": "Steve Harmeyer",
+            "email": "harmeyersteve@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Submtd\\LaravelRequestScope\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Submtd\\LaravelRequestScope\\Providers\\LaravelRequestScopeServiceProvider"
+            ]
+        }
+    }
+}
