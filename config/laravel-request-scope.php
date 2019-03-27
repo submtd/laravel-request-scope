@@ -52,6 +52,16 @@ return [
     'likeOperator' => 'like',
 
     /**
+     * starts with operator (e.g. ?filter[field]=sw|value)
+     */
+    'startsWithOperator' => 'sw',
+
+    /**
+     * ends with operator (e.g. ?filter[field]=ew|value)
+     */
+    'endsWithOperator' => 'ew',
+
+    /**
      * equal operator (e.g. ?filter[field]=eq|value)
      */
     'equalOperator' => 'eq',

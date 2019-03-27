@@ -92,6 +92,16 @@ class RequestScope implements Scope
                     'operator' => 'like',
                     'value' => '%' . $value . '%',
                 ];
+            case config('laravel-request-scope.startsWithOperator', 'sw'):
+                return [
+                    'operator' => 'like',
+                    'value' => $value . '%',
+                ];
+            case config('laravel-request-scope.endsWithOperator', 'ew'):
+                return [
+                    'operator' => 'like',
+                    'value' => '%' . $value,
+                ];
             case config('laravel-request-scope.equalOperator', 'eq'):
                 return [
                     'operator' => '=',
