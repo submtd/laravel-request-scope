@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Submtd\LaravelRequestScope\ColumnNameSanitizer;
 
 class RequestScope implements Scope
 {
@@ -37,6 +38,7 @@ class RequestScope implements Scope
 
     protected function parseFilter($field, $filter)
     {
+        $field = ColumnNameSanitizer::sanitize($field);
         $filters = explode(',', $filter);
         $this->builder->where(function ($query) use ($field, $filters) {
             foreach ($filters as $filter) {
@@ -128,6 +130,7 @@ class RequestScope implements Scope
         }
         $sorts = explode(',', $sorts);
         foreach ($sorts as $sort) {
+            ColumnNameSanitizer::sanitize($sort);
             if ($sort[0] == '-') {
                 $this->builder->orderBy(ltrim($sort, '-'), 'desc');
             } else {
@@ -143,7 +146,9 @@ class RequestScope implements Scope
         }
         $select = [];
         foreach ($fields as $table => $fields) {
+            $table = ColumnNameSanitizer::sanitize($table);
             foreach (explode(',', $fields) as $field) {
+                $field = ColumnNameSanitizer::sanitize($field);
                 $select[] = $table . '.' . $field;
             }
         }
