@@ -2,11 +2,11 @@
 
 namespace Submtd\LaravelRequestScope\Scopes;
 
-use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Scope;
 use Submtd\LaravelRequestScope\ColumnNameSanitizer;
+use Submtd\LaravelRequestScope\Services\FilterParser;
 
 class RequestScope implements Scope
 {
@@ -23,93 +23,25 @@ class RequestScope implements Scope
         $this->parseFields();
     }
 
-    protected function parseFilters()
-    {
+    protected function parseFilters(): void {
         if (!$filters = request()->get(config('laravel-request-scope.filterParameter', 'filter'))) {
             return;
         }
         if (!is_array($filters)) {
             return;
         }
-        foreach ($filters as $field => $filter) {
-            $this->parseFilter($field, $filter);
-        }
-    }
 
-    protected function parseFilter($field, $filter)
-    {
-        $field = ColumnNameSanitizer::sanitize($field);
-        $filters = explode(',', $filter);
-        $this->builder->where(function ($query) use ($field, $filters) {
-            foreach ($filters as $filter) {
-                $parsed = $this->parseOperator($filter);
-                $query->orWhere($field, $parsed['operator'], $parsed['value']);
-            }
+        $filters = FilterParser::parse($filters);
+
+        $filters->each(function ($parsedFilters, $field) {
+            $column = ColumnNameSanitizer::sanitize($field);
+
+            $this->builder->where(function ($query) use ($column, $parsedFilters) {
+                foreach ($parsedFilters as $parsed) {
+                    $query->orWhere($column, $parsed['operator'], $parsed['value']);
+                }
+            });
         });
-    }
-
-    protected function parseOperator($filter)
-    {
-        if (!Str::contains($filter, config('laravel-request-scope.operatorSeparator', '|'))) {
-            $filter = config('laravel-request-scope.defaultOperator', 'eq') . config('laravel-request-scope.operatorSeparator', '|') . $filter;
-        }
-        $operator = Str::before($filter, config('laravel-request-scope.operatorSeparator', '|'));
-        $value = Str::after($filter, config('laravel-request-scope.operatorSeparator', '|'));
-        switch ($operator) {
-            case config('laravel-request-scope.lessThanOperator', 'lt'):
-                return [
-                    'operator' => '<',
-                    'value' => $value,
-                ];
-            case config('laravel-request-scope.lessThanOrEqualOperator', 'lte'):
-                return [
-                    'operator' => '<=',
-                    'value' => $value,
-                ];
-            case config('laravel-request-scope.greaterThanOperator', 'gt'):
-                return [
-                    'operator' => '>',
-                    'value' => $value,
-                ];
-            case config('laravel-request-scope.greaterThanOrEqualOperator', 'gte'):
-                return [
-                    'operator' => '>=',
-                    'value' => $value,
-                ];
-            case config('laravel-request-scope.notEqualOperator', 'ne'):
-                return [
-                    'operator' => '<>',
-                    'value' => $value,
-                ];
-            case config('laravel-request-scope.betweenOperator', 'bt'):
-                return [
-                    'operator' => 'between',
-                    'value' => [
-                        Str::before($value, config('laravel-request-scope.betweenSeparator', ';')),
-                        Str::after($value, config('laravel-request-scope.betweenSeparator', ';')),
-                    ],
-                ];
-            case config('laravel-request-scope.likeOperator', 'like'):
-                return [
-                    'operator' => 'like',
-                    'value' => '%' . $value . '%',
-                ];
-            case config('laravel-request-scope.startsWithOperator', 'sw'):
-                return [
-                    'operator' => 'like',
-                    'value' => $value . '%',
-                ];
-            case config('laravel-request-scope.endsWithOperator', 'ew'):
-                return [
-                    'operator' => 'like',
-                    'value' => '%' . $value,
-                ];
-            case config('laravel-request-scope.equalOperator', 'eq'):
-                return [
-                    'operator' => '=',
-                    'value' => $value,
-                ];
-        }
     }
 
     protected function parseIncludes()

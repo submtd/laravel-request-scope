@@ -7,6 +7,11 @@ return [
     'filterParameter' => 'filter',
 
     /**
+     * filter separator. separates multiple filters. (e.g. ?filter[field]=eq|10,eq|5)
+     */
+    'filterSeparator' => ',',
+
+    /**
      * operator separator. separates the operator from the filter (e.g. ?filter[field]=lt|10)
      */
     'operatorSeparator' => '|',
