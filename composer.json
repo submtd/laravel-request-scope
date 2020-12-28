@@ -16,7 +16,7 @@
         "php": ">=7.4"
     },
     "require-dev": {
-        "orchestra/testbench": "^5.0 | ^6.0",
+        "orchestra/testbench": "^5.0 || ^6.0",
         "roave/security-advisories": "dev-master"
     },
     "config": {
@@ -38,7 +38,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Submtd\\LaravelRequestScope\\Tests\\": "tests"
+            "Submtd\\LaravelRequestScope\\Tests\\": "tests",
+            "Submtd\\LaravelRequestScope\\Tests\\Database\\Factories\\": "tests/database/factories"
         }
     },
     "minimum-stability": "dev",
