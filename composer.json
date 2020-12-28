@@ -1,17 +1,28 @@
 {
     "name": "submtd/laravel-request-scope",
+    "type": "library",
     "description": "Adds sorting, filtering and other options as query parameters to Laravel apps.",
+    "keywords": [
+        "laravel"
+    ],
+    "license": "proprietary",
     "authors": [
         {
             "name": "Steve Harmeyer",
             "email": "harmeyersteve@gmail.com"
         }
     ],
-    "require": {},
-    "autoload": {
-        "psr-4": {
-            "Submtd\\LaravelRequestScope\\": "src/"
-        }
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.0 | ^6.0",
+        "roave/security-advisories": "dev-master"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
     },
     "extra": {
         "laravel": {
@@ -19,5 +30,17 @@
                 "Submtd\\LaravelRequestScope\\Providers\\LaravelRequestScopeServiceProvider"
             ]
         }
-    }
+    },
+    "autoload": {
+        "psr-4": {
+            "Submtd\\LaravelRequestScope\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Submtd\\LaravelRequestScope\\Tests\\": "tests"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
