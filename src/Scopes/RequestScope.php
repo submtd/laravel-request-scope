@@ -62,15 +62,14 @@ class RequestScope implements Scope
             return;
         }
         if (isset($filters['tags'])) {
-            $tags = collect($filters['tags'] ?? null);
             foreach ($filters['tags'] as $item) {
                 $tags = explode(',', $item['name'] ?? null);
                 if ($vocabulary = $item['vocabulary'] ?? null) {
-                    if (method_exists($this->builder, 'withAllTags')) {
+                    if ($this->model->hasNamedScope('withAllTags')) {
                         $this->builder->withAllTags($tags, $vocabulary);
                     }
                 } else {
-                    if (method_exists($this->builder, 'withAllTagsOfAnyType')) {
+                    if ($this->model->hasNamedScope('withAllTagsOfAnyType')) {
                         $this->builder->withAllTagsOfAnyType($tags);
                     }
                 }
