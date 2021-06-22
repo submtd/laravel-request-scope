@@ -25,6 +25,10 @@ class ColumnNameSanitizer
             throw InvalidColumnName::invalidCharacters($column);
         }
 
+        // JSONAPI expects properties with a hyphen but that doesn't mesh with
+        // our database column naming.
+        $column = str_replace('-', '_', $column);
+
         return $column;
     }
 
