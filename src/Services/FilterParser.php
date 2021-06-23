@@ -72,7 +72,7 @@ class FilterParser {
     public static function parse($rawFilters): Collection {
         $ret = [];
         foreach ($rawFilters as $field => $grouped_filter) {
-            $split_filters = explode(config('laravel-request-scope.filterSeparator', ','), $grouped_filter);
+            $split_filters = explode(config('laravel-request-scope.filterSeparator', ','), (string)$grouped_filter);
             foreach ($split_filters as $individual_filter) {
                 $ret[$field][] = self::parseOperator($individual_filter);
             }
