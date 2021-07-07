@@ -2,7 +2,9 @@
 
 namespace Submtd\LaravelRequestScope;
 
-class ColumnNameSanitizer  
+use RuntimeException;
+
+class ColumnNameSanitizer
 {
     /**
      * Based on maximum column name length.
@@ -18,11 +20,17 @@ class ColumnNameSanitizer
     public static function sanitize(string $column): string
     {
         if (strlen($column) > self::MAX_COLUMN_NAME_LENGTH) {
-            throw InvalidColumnName::columnNameTooLong($column, self::MAX_COLUMN_NAME_LENGTH);
+            throw new RuntimeException(
+                sprintf(
+                    'Given column name `%s` exceeds the maximum column name length of %d characters.',
+                    $column,
+                    self::MAX_COLUMN_NAME_LENGTH
+                )
+            );
         }
 
         if (! preg_match(self::VALID_COLUMN_NAME_REGEX, $column)) {
-            throw InvalidColumnName::invalidCharacters($column);
+            throw new RuntimeException(sprintf('Column name `%s` may contain only alphanumerics or underscores, and may not begin with a digit.', $column));
         }
 
         // JSONAPI expects properties with a hyphen but that doesn't mesh with
