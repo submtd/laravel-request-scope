@@ -52,6 +52,11 @@ return [
     'betweenSeparator' => ';',
 
     /**
+     * in separator (e.g. ?filter[field]=in|1;10)
+     */
+    'inSeparator' => ';',
+
+    /**
      * like operator (e.g. ?filter[field]=like|value)
      */
     'likeOperator' => 'like',
@@ -70,6 +75,16 @@ return [
      * equal operator (e.g. ?filter[field]=eq|value)
      */
     'equalOperator' => 'eq',
+
+    /**
+     * in operator (e.g. ?filter[field]=in|value;value2)
+     */
+    'inOperator' => 'in',
+
+    /**
+     * not in operator (e.g. ?filter[field]=notin|value;value2)
+     */
+    'notInOperator' => 'notin',
 
     /**
      * default operator. This is the operator applied if none is set in the query parameter

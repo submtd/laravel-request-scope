@@ -83,7 +83,12 @@ class RequestScope implements Scope
 
             $this->builder->where(function ($query) use ($column, $parsedFilters) {
                 foreach ($parsedFilters as $parsed) {
-                    $query->orWhere($column, $parsed['operator'], $parsed['value']);
+                    if (is_callable([$query, $parsed['operator']])){
+                        $query->{$parsed['operator']}($column, $parsed['value']);
+                    }
+                    else{
+                        $query->orWhere($column, $parsed['operator'], $parsed['value']);
+                    }
                 }
             });
         });
