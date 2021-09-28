@@ -151,6 +151,16 @@ class FilterParser {
                     'operator' => '=',
                     'value' => $value,
                 ];
+            case config('laravel-request-scope.inOperator', 'in'):
+                return [
+                    'operator' => "whereIn",
+                    'value' => explode(config('laravel-request-scope.inSeparator', ';'), $value),
+                ];
+            case config('laravel-request-scope.notInOperator', 'notin'):
+                return [
+                    'operator' => 'whereNotIn',
+                    'value' => explode(config('laravel-request-scope.inSeparator', ';'), $value),
+                ];
         }
 
         throw new RuntimeException('Unsupported filter operator.');
