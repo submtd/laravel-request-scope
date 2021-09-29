@@ -83,7 +83,7 @@ class RequestScope implements Scope
 
             $this->builder->where(function ($query) use ($column, $parsedFilters) {
                 foreach ($parsedFilters as $parsed) {
-                    if (is_callable([$query, $parsed['operator']])){
+                    if (method_exists(\Illuminate\Database\Query\Builder::class, $parsed['operator'])){
                         $query->{$parsed['operator']}($column, $parsed['value']);
                     }
                     else{
