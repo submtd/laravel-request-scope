@@ -6,14 +6,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTestingModelTable extends Migration {
-
+class CreateTestingModelTable extends Migration
+{
     /**
      * Reverse the migrations.
      *
      * @return void
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::dropIfExists('testing_models');
     }
 
@@ -22,7 +23,8 @@ class CreateTestingModelTable extends Migration {
      *
      * @return void
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::create(
             'testing_models',
             function (Blueprint $table) {
@@ -33,5 +35,4 @@ class CreateTestingModelTable extends Migration {
             }
         );
     }
-
 }

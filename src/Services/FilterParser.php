@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Submtd\LaravelRequestScope\Services;
 
-
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -14,8 +13,8 @@ use RuntimeException;
  *
  * Parses a set of string filters into a usable array.
  */
-class FilterParser {
-
+class FilterParser
+{
     /**
      * Escape a string for use with LIKE.
      *
@@ -28,7 +27,8 @@ class FilterParser {
      * @return string
      *   The escaped string.
      */
-    protected static function escapeLike(string $string): string {
+    protected static function escapeLike(string $string): string
+    {
         return addcslashes($string, '\\%_');
     }
 
@@ -43,8 +43,9 @@ class FilterParser {
      * @return bool
      *   Returns TRUE if the filter is simple.
      */
-    protected static function isSimpleFilter(string $filter): bool {
-        return !Str::contains($filter, config('laravel-request-scope.operatorSeparator', '|'));
+    protected static function isSimpleFilter(string $filter): bool
+    {
+        return ! Str::contains($filter, config('laravel-request-scope.operatorSeparator', '|'));
     }
 
     /**
@@ -69,7 +70,8 @@ class FilterParser {
      * @return Collection
      *   The parsed filters.
      */
-    public static function parse($rawFilters): Collection {
+    public static function parse($rawFilters): Collection
+    {
         $ret = [];
         foreach ($rawFilters as $field => $grouped_filter) {
             $split_filters = explode(config('laravel-request-scope.filterSeparator', ','), (string)$grouped_filter);
@@ -90,12 +92,15 @@ class FilterParser {
      * @return array|string[]
      *   The operator and value(s) to use for filtering.
      */
-    protected static function parseOperator(string $filter): array {
+    protected static function parseOperator(string $filter): array
+    {
         if (self::isSimpleFilter($filter)) {
-            $filter = sprintf('%s%s%s',
+            $filter = sprintf(
+                '%s%s%s',
                 config('laravel-request-scope.defaultOperator', 'eq'),
                 config('laravel-request-scope.operatorSeparator', '|'),
-                $filter);
+                $filter
+            );
         }
 
         [$operator, $value] = explode(config('laravel-request-scope.operatorSeparator', '|'), $filter, 2);
@@ -165,5 +170,4 @@ class FilterParser {
 
         throw new RuntimeException('Unsupported filter operator.');
     }
-
 }

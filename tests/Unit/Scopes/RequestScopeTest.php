@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Submtd\LaravelRequestScope\Tests\Unit\Scopes;
-
 
 use Illuminate\Support\Facades\Request;
 use Submtd\LaravelRequestScope\Scopes\RequestScope;
@@ -14,13 +14,13 @@ use Submtd\LaravelRequestScope\Tests\TestingModel;
  *
  * @coversDefaultClass \Submtd\LaravelRequestScope\Scopes\RequestScope
  */
-class RequestScopeTest extends TestCase {
-
+class RequestScopeTest extends TestCase
+{
     /**
      * @covers ::parseFilters
      */
-    public function test_parseFilters_builds_complex_query(): void {
-
+    public function test_parseFilters_builds_complex_query(): void
+    {
         Request::replace([
             'filter' => [
                 'testing_field_one' => 'foo',
@@ -68,8 +68,9 @@ class RequestScopeTest extends TestCase {
         $results = $query->get();
 
         self::assertCount(2, $results);
-        self::assertEquals($find_models->pluck('id')->sort()->toArray(),
-            $results->pluck('id')->sort()->toArray());
+        self::assertEquals(
+            $find_models->pluck('id')->sort()->toArray(),
+            $results->pluck('id')->sort()->toArray()
+        );
     }
-
 }

@@ -33,7 +33,7 @@ class RequestScope implements Scope
      * Parse pagination.
      * @return void
      */
-    protected function parsePagination() : void
+    protected function parsePagination(): void
     {
         $page = (array) request()->input('page');
         // check for page[size], page[limit], or just limit
@@ -55,10 +55,10 @@ class RequestScope implements Scope
 
     protected function parseFilters(): void
     {
-        if (!$filters = request()->input(config('laravel-request-scope.filterParameter', 'filter'))) {
+        if (! $filters = request()->input(config('laravel-request-scope.filterParameter', 'filter'))) {
             return;
         }
-        if (!is_array($filters)) {
+        if (! is_array($filters)) {
             return;
         }
         if (isset($filters['tags'])) {
@@ -83,10 +83,9 @@ class RequestScope implements Scope
 
             $this->builder->where(function ($query) use ($column, $parsedFilters) {
                 foreach ($parsedFilters as $parsed) {
-                    if (method_exists(\Illuminate\Database\Query\Builder::class, $parsed['operator'])){
+                    if (method_exists(\Illuminate\Database\Query\Builder::class, $parsed['operator'])) {
                         $query->{$parsed['operator']}($column, $parsed['value']);
-                    }
-                    else{
+                    } else {
                         $query->orWhere($column, $parsed['operator'], $parsed['value']);
                     }
                 }
@@ -98,7 +97,7 @@ class RequestScope implements Scope
     {
         $includes = request()->input(config('laravel-request-scope.includeParameter', 'include'));
         foreach (explode(',', $includes) as $include) {
-            if (!$include) {
+            if (! $include) {
                 continue;
             }
             $this->builder->with($include);
@@ -107,7 +106,7 @@ class RequestScope implements Scope
 
     protected function parseSorts()
     {
-        if (!$sorts = request()->input(config('laravel-request-scope.sortParameter', 'sort'))) {
+        if (! $sorts = request()->input(config('laravel-request-scope.sortParameter', 'sort'))) {
             return;
         }
         $sorts = explode(',', $sorts);
@@ -123,7 +122,7 @@ class RequestScope implements Scope
 
     protected function parseFields()
     {
-        if (!$fields = request()->input(config('laravel-request-scope.fieldsParameter', 'fields'))) {
+        if (! $fields = request()->input(config('laravel-request-scope.fieldsParameter', 'fields'))) {
             return;
         }
         $select = [];

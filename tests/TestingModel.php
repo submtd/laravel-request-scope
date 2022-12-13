@@ -11,8 +11,8 @@ use Submtd\LaravelRequestScope\Tests\Database\Factories\TestingModelFactory;
 /**
  * Class TestingModel
  */
-class TestingModel extends Model {
-
+class TestingModel extends Model
+{
     use HasFactory;
 
     /**
@@ -26,8 +26,8 @@ class TestingModel extends Model {
     /**
      * {@inheritdoc}
      */
-    protected static function newFactory(): TestingModelFactory {
+    protected static function newFactory(): TestingModelFactory
+    {
         return TestingModelFactory::new();
     }
-
 }

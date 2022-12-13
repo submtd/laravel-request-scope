@@ -10,8 +10,8 @@ use Submtd\LaravelRequestScope\Tests\TestingModel;
 /**
  * Class TestingModelFactory
  */
-class TestingModelFactory extends Factory {
-
+class TestingModelFactory extends Factory
+{
     /**
      * {@inheritdoc}
      */
@@ -20,12 +20,11 @@ class TestingModelFactory extends Factory {
     /**
      * {@inheritdoc}
      */
-    public function definition(): array {
+    public function definition(): array
+    {
         return [
             'testing_field_one' => $this->faker->realText(15),
             'testing_field_two' => $this->faker->realText(15),
         ];
     }
-
 }
-

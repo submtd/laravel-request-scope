@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Submtd\LaravelRequestScope\Tests\Unit\Services;
@@ -12,9 +13,10 @@ use Submtd\LaravelRequestScope\Tests\TestCase;
  *
  * @coversDefaultClass \Submtd\LaravelRequestScope\Services\FilterParser
  */
-class FilterParserTest extends TestCase {
-
-    public function dataProviderEscapeLike(): array {
+class FilterParserTest extends TestCase
+{
+    public function dataProviderEscapeLike(): array
+    {
         return [
             'unchanged if no wildcard' => ['like|example', 'like', '%example%'],
             'escaped if wildcard at front' => ['like|%example', 'like', '%\%example%'],
@@ -24,14 +26,16 @@ class FilterParserTest extends TestCase {
         ];
     }
 
-    public function dataProviderIsSimpleFilter(): array {
+    public function dataProviderIsSimpleFilter(): array
+    {
         return [
             'string missing separator is simple' => ['example', '=', 'example'],
             'string with separator is not simple' => ['gt|example', '>', 'example'],
         ];
     }
 
-    public function dataProviderMultipleSeparators(): array {
+    public function dataProviderMultipleSeparators(): array
+    {
         return [
             'no separator works' => ['example', '=', 'example'],
             'one separator works' => ['eq|example', '=', 'example'],
@@ -39,7 +43,8 @@ class FilterParserTest extends TestCase {
         ];
     }
 
-    public function dataProviderParseOperator(): array {
+    public function dataProviderParseOperator(): array
+    {
         return [
             'lt is supported and works' => ['lt|example', '<', 'example'],
             'lte is supported and works' => ['lte|example', '<=', 'example'],
@@ -69,7 +74,8 @@ class FilterParserTest extends TestCase {
      * @param string $expectedOperator
      * @param string|array $expectedValue
      */
-    public function test_parse(string $filter, string $expectedOperator, $expectedValue): void {
+    public function test_parse(string $filter, string $expectedOperator, $expectedValue): void
+    {
         $result = FilterParser::parse(['foo' => $filter]);
         self::assertEquals($expectedOperator, $result['foo'][0]['operator']);
         self::assertEquals($expectedValue, $result['foo'][0]['value']);
@@ -79,7 +85,8 @@ class FilterParserTest extends TestCase {
      * @covers ::parse
      * @depends test_parse
      */
-    public function test_parse_splits_separated_filters(): void {
+    public function test_parse_splits_separated_filters(): void
+    {
         $result = FilterParser::parse([
             'foo' => 'eq|3,eq|5',
             'bar' => 'lt|10',
@@ -98,10 +105,10 @@ class FilterParserTest extends TestCase {
      * @covers ::parseOperator
      * @depends test_parse
      */
-    public function test_parse_throws_unsupported_exception(): void {
+    public function test_parse_throws_unsupported_exception(): void
+    {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Unsupported filter operator.');
         FilterParser::parse(['foo' => 'abc123|def456']);
     }
-
 }
