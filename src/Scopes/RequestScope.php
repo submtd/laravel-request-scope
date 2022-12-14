@@ -55,11 +55,11 @@ class RequestScope implements Scope
     protected function parseFilters(): void
     {
         $filters = request()->input(config('laravel-request-scope.filterParameter', 'filter'));
-        if (empty($filters) || !is_array($filters)) {
+        if (empty($filters) || ! is_array($filters)) {
             return;
         }
 
-        if (!empty($filters['tags'])) {
+        if (! empty($filters['tags'])) {
             $this->processTagFilters($filters);
         }
 
