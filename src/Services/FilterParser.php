@@ -11,7 +11,9 @@ use RuntimeException;
 /**
  * Class FilterParser.
  *
- * Parses a set of string filters into a usable array.
+ * Parses a set of string filters into a usable array. This is meant to be a
+ * generic parser that can be used outside Eloquent or a Query Builder context.
+ * This means the values here should not necessarily be tied to query methods.
  */
 class FilterParser
 {
@@ -105,6 +107,16 @@ class FilterParser
 
         [$operator, $value] = explode(config('laravel-request-scope.operatorSeparator', '|'), $filter, 2);
 
+        /**
+         * IMPORTANT! Operators here are not meant to be the same as Eloquent or
+         * Query Builder methods. These are generic names (or symbols) that are
+         * used outside of the RequestScope scope itself. Changing 'operator'
+         * values here will break other applications and libraries that rely on
+         * this parser class.
+         *
+         * Mapping to Query Builder or Eloquent methods/scopes happens inside of
+         * the RequestScope class itself.
+         */
         switch ($operator) {
             case config('laravel-request-scope.lessThanOperator', 'lt'):
                 return [
@@ -133,7 +145,7 @@ class FilterParser
                 ];
             case config('laravel-request-scope.betweenOperator', 'bt'):
                 return [
-                    'operator' => 'whereBetween',
+                    'operator' => 'between',
                     'value' => explode(config('laravel-request-scope.betweenSeparator', ';'), $value, 2),
                 ];
             case config('laravel-request-scope.likeOperator', 'like'):
@@ -158,12 +170,12 @@ class FilterParser
                 ];
             case config('laravel-request-scope.inOperator', 'in'):
                 return [
-                    'operator' => "whereIn",
+                    'operator' => 'in',
                     'value' => explode(config('laravel-request-scope.inSeparator', ';'), $value),
                 ];
             case config('laravel-request-scope.notInOperator', 'notin'):
                 return [
-                    'operator' => 'whereNotIn',
+                    'operator' => 'notIn',
                     'value' => explode(config('laravel-request-scope.inSeparator', ';'), $value),
                 ];
         }

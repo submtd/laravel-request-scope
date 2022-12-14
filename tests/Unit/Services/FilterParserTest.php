@@ -56,6 +56,8 @@ class FilterParserTest extends TestCase
             'sw is supported and works' => ['sw|example', 'like', 'example%'],
             'ew is supported and works' => ['ew|example', 'like', '%example'],
             'eq is supported and works' => ['eq|example', '=', 'example'],
+            'in is supported and works' => ['in|1;2', 'in', [1, 2]],
+            'notin in is supported and works' => ['notin|1;2', 'notIn', [1, 2]],
         ];
     }
 

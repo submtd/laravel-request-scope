@@ -21,6 +21,16 @@ class TestingModel extends Model
     protected $fillable = [
         'testing_field_one',
         'testing_field_two',
+        'testing_field_int',
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $casts = [
+        'testing_field_one' => 'string',
+        'testing_field_two' => 'string',
+        'testing_field_int' => 'int',
     ];
 
     /**

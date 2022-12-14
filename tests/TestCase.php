@@ -57,6 +57,9 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
             'includeParameter' => 'include',
             'sortParameter' => 'sort',
             'fieldsParameter' => 'fields',
+            'inOperator' => 'in',
+            'notInOperator' => 'notin',
+            'inSeparator' => ';',
         ]);
     }
 }
