@@ -5,18 +5,17 @@ namespace Submtd\LaravelRequestScope\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Submtd\LaravelRequestScope\ColumnNameSanitizer;
 use Submtd\LaravelRequestScope\Services\FilterParser;
 
 class RequestScope implements Scope
 {
-    protected $builder;
-    protected $model;
+    protected Builder $builder;
+    protected Model $model;
 
     /**
-     * Apply scope.
-     * @param \Illuminate\Database\Eloquent\Builder $builder
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * {@inheritDoc}
      */
     public function apply(Builder $builder, Model $model)
     {
@@ -55,27 +54,15 @@ class RequestScope implements Scope
 
     protected function parseFilters(): void
     {
-        if (! $filters = request()->input(config('laravel-request-scope.filterParameter', 'filter'))) {
+        $filters = request()->input(config('laravel-request-scope.filterParameter', 'filter'));
+        if (empty($filters) || !is_array($filters)) {
             return;
         }
-        if (! is_array($filters)) {
-            return;
+
+        if (!empty($filters['tags'])) {
+            $this->processTagFilters($filters);
         }
-        if (isset($filters['tags'])) {
-            foreach ($filters['tags'] as $item) {
-                $tags = explode(',', $item['name'] ?? null);
-                if ($vocabulary = $item['vocabulary'] ?? null) {
-                    if ($this->model->hasNamedScope('withAllTags')) {
-                        $this->builder->withAllTags($tags, $vocabulary);
-                    }
-                } else {
-                    if ($this->model->hasNamedScope('withAllTagsOfAnyType')) {
-                        $this->builder->withAllTagsOfAnyType($tags);
-                    }
-                }
-            }
-            unset($filters['tags']);
-        }
+
         $filters = FilterParser::parse($filters);
 
         $filters->each(function ($parsedFilters, $field) {
@@ -83,7 +70,7 @@ class RequestScope implements Scope
 
             $this->builder->where(function ($query) use ($column, $parsedFilters) {
                 foreach ($parsedFilters as $parsed) {
-                    if (method_exists(\Illuminate\Database\Query\Builder::class, $parsed['operator'])) {
+                    if (method_exists(QueryBuilder::class, $parsed['operator'])) {
                         $query->{$parsed['operator']}($column, $parsed['value']);
                     } else {
                         $query->orWhere($column, $parsed['operator'], $parsed['value']);
@@ -93,7 +80,22 @@ class RequestScope implements Scope
         });
     }
 
-    protected function parseIncludes()
+    protected function processTagFilters(&$filters): void
+    {
+        foreach ($filters['tags'] as $item) {
+            $tags = explode(',', $item['name'] ?? null);
+            if ($vocabulary = ($item['vocabulary'] ?? null)) {
+                if ($this->model->hasNamedScope('withAllTags')) {
+                    $this->builder->withAllTags($tags, $vocabulary);
+                }
+            } elseif ($this->model->hasNamedScope('withAllTagsOfAnyType')) {
+                $this->builder->withAllTagsOfAnyType($tags);
+            }
+        }
+        unset($filters['tags']);
+    }
+
+    protected function parseIncludes(): void
     {
         $includes = request()->input(config('laravel-request-scope.includeParameter', 'include'));
         foreach (explode(',', $includes) as $include) {
@@ -104,7 +106,7 @@ class RequestScope implements Scope
         }
     }
 
-    protected function parseSorts()
+    protected function parseSorts(): void
     {
         if (! $sorts = request()->input(config('laravel-request-scope.sortParameter', 'sort'))) {
             return;
@@ -112,7 +114,7 @@ class RequestScope implements Scope
         $sorts = explode(',', $sorts);
         foreach ($sorts as $sort) {
             ColumnNameSanitizer::sanitize($sort);
-            if ($sort[0] == '-') {
+            if ($sort[0] === '-') {
                 $this->builder->orderBy(ltrim($sort, '-'), 'desc');
             } else {
                 $this->builder->orderBy($sort);
@@ -120,7 +122,7 @@ class RequestScope implements Scope
         }
     }
 
-    protected function parseFields()
+    protected function parseFields(): void
     {
         if (! $fields = request()->input(config('laravel-request-scope.fieldsParameter', 'fields'))) {
             return;
