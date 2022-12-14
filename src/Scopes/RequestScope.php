@@ -5,7 +5,7 @@ namespace Submtd\LaravelRequestScope\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Support\Str;
 use Submtd\LaravelRequestScope\ColumnNameSanitizer;
 use Submtd\LaravelRequestScope\Services\FilterParser;
 
@@ -68,12 +68,22 @@ class RequestScope implements Scope
         $filters->each(function ($parsedFilters, $field) {
             $column = ColumnNameSanitizer::sanitize($field);
 
-            $this->builder->where(function ($query) use ($column, $parsedFilters) {
+            $this->builder->where(static function (Builder $query) use ($column, $parsedFilters) {
                 foreach ($parsedFilters as $parsed) {
-                    if (method_exists(QueryBuilder::class, $parsed['operator'])) {
-                        $query->{$parsed['operator']}($column, $parsed['value']);
+                    $value = $parsed['value'];
+                    $column = $query->qualifyColumn($column);
+                    $method = Str::startsWith($parsed['operator'], 'where') ?
+                        $parsed['operator'] :
+                        Str::camel('where_'.$parsed['operator']);
+
+                    // Scopes take priority over everything else.
+                    if ($query->hasNamedScope($parsed['operator'])) {
+                        $query->{$parsed['operator']}($value);
+                    } // Fall back to direct method calls on the query.
+                    elseif (method_exists($query, $method) || method_exists($query->toBase(), $method)) {
+                        $query->{$method}($column, $value);
                     } else {
-                        $query->orWhere($column, $parsed['operator'], $parsed['value']);
+                        $query->orWhere($column, $parsed['operator'], $value);
                     }
                 }
             });

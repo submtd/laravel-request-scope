@@ -133,7 +133,7 @@ class FilterParser
                 ];
             case config('laravel-request-scope.betweenOperator', 'bt'):
                 return [
-                    'operator' => 'whereBetween',
+                    'operator' => 'between',
                     'value' => explode(config('laravel-request-scope.betweenSeparator', ';'), $value, 2),
                 ];
             case config('laravel-request-scope.likeOperator', 'like'):
@@ -158,12 +158,12 @@ class FilterParser
                 ];
             case config('laravel-request-scope.inOperator', 'in'):
                 return [
-                    'operator' => "whereIn",
+                    'operator' => 'in',
                     'value' => explode(config('laravel-request-scope.inSeparator', ';'), $value),
                 ];
             case config('laravel-request-scope.notInOperator', 'notin'):
                 return [
-                    'operator' => 'whereNotIn',
+                    'operator' => 'notIn',
                     'value' => explode(config('laravel-request-scope.inSeparator', ';'), $value),
                 ];
         }
