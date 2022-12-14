@@ -27,11 +27,12 @@ class CreateTestingModelTable extends Migration
     {
         Schema::create(
             'testing_models',
-            function (Blueprint $table) {
+            static function (Blueprint $table) {
                 $table->id();
                 $table->timestamps();
-                $table->string('testing_field_one')->default('');
-                $table->string('testing_field_two')->default('');
+                $table->string('testing_field_one')->default('')->index();
+                $table->string('testing_field_two')->default('')->index();
+                $table->integer('testing_field_int')->default(0)->index();
             }
         );
     }
