@@ -25,6 +25,7 @@ class TestingModelFactory extends Factory
         return [
             'testing_field_one' => $this->faker->realText(15),
             'testing_field_two' => $this->faker->realText(15),
+            'testing_field_int' => 0,
         ];
     }
 }
