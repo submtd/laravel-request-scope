@@ -87,14 +87,14 @@ class RequestScope implements Scope
 
                         // add all null rows in case ne| is used and value !== null.
                         // add all null rows in case eq|null
-                        if(
+                        if (
                             (in_array($parsed['operator'], [ '<>', '!=' ]) && strtolower($value) !== 'null')
                             || (in_array($parsed['operator'], [ '=' ]) && strtolower($value) === 'null')
                         ) {
                             $query->orWhereNull($column);
 
                         // add all not null rows in case ne|null is used
-                        } else if ( in_operator($parsed['operator'], [ '<>', '!=' ]) && strtolower($value) === 'null' ){
+                        } elseif (in_operator($parsed['operator'], [ '<>', '!=' ]) && strtolower($value) === 'null') {
                             $query->orWhereNotNull($column);
                         }
                     }
