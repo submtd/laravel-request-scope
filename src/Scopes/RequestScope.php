@@ -84,6 +84,11 @@ class RequestScope implements Scope
                         $query->{$method}($column, $value);
                     } else {
                         $query->orWhere($column, $parsed['operator'], $value);
+
+                        // add all null rows in case <> operator is used.
+                        if(in_array($parsed['operator'], [ '<>', '!=' ])) {
+                            $query->orWhereNull($column);
+                        }
                     }
                 }
             });
