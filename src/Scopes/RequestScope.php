@@ -94,7 +94,7 @@ class RequestScope implements Scope
                             $query->orWhereNull($column);
 
                         // add all not null rows in case ne|null is used
-                        } elseif (in_operator($parsed['operator'], [ '<>', '!=' ]) && strtolower($value) === 'null') {
+                        } elseif (in_array($parsed['operator'], [ '<>', '!=' ]) && strtolower($value) === 'null') {
                             $query->orWhereNotNull($column);
                         }
                     }
