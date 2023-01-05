@@ -79,8 +79,13 @@ class RequestScope implements Scope
                     // Scopes take priority over everything else.
                     if ($query->hasNamedScope($parsed['operator'])) {
                         $query->{$parsed['operator']}($value);
-                    } // Fall back to direct method calls on the query.
-                    elseif (method_exists($query, $method) || method_exists($query->toBase(), $method)) {
+                    }
+                    // Fall back to direct method calls on the query.
+                    // We check both the Eloquent query and the base Builder
+                    // query because method_exists does not include Laravel
+                    // magic. Something like `whereIn` will be missed unless
+                    // you check both.
+                    elseif (method_exists($query, $method) || method_exists($query->getQuery(), $method)) {
                         $query->{$method}($column, $value);
                     } else {
                         $query->orWhere($column, $parsed['operator'], $value);
