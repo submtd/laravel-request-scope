@@ -182,4 +182,44 @@ class FilterParser
 
         throw new RuntimeException('Unsupported filter operator.');
     }
+
+    /**
+     * Determins how to handle null values based on the request filters and values
+     *
+     * @param string $operator
+     *   Logical SQL operator after parsing
+     * @param string $value
+     *   Value sent in the request, after the operator (e.g. ne|snow)
+     *
+     * @return string
+     *   directive how to handle received value
+     *   possible outputs :
+     *     'exclude nulls',
+     *     'include nulls'
+     *     'return nulls',
+     *     'process value',
+     */
+    public static function handleNullValues(string $operator, string $value): string
+    {
+        $value = strtolower($value);
+        if (in_array($operator, [ '<>', '!=' ])) {
+            if ($value === 'null') {
+                // ne|null
+                return 'exclude nulls';
+            } else {
+                // ne|any_value
+                return 'include nulls';
+            }
+        }
+
+        if ($operator == '=' ) {
+            if($value === 'null') {
+                // eq|null
+                return 'return nulls';
+            } else {
+                // eq|any_value
+                return 'process value';
+            }
+        }
+    }
 }
