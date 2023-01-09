@@ -88,19 +88,12 @@ class RequestScope implements Scope
                     elseif (method_exists($query, $method) || method_exists($query->getQuery(), $method)) {
                         $query->{$method}($column, $value);
                     } else {
-                        $query->orWhere($column, $parsed['operator'], $value);
-
-                        // add all null rows in case ne| is used and value !== null.
-                        // add all null rows in case eq|null
-                        if (
-                            (in_array($parsed['operator'], [ '<>', '!=' ]) && strtolower($value) !== 'null')
-                            || (in_array($parsed['operator'], [ '=' ]) && strtolower($value) === 'null')
-                        ) {
-                            $query->orWhereNull($column);
-
-                        // add all not null rows in case ne|null is used
-                        } elseif (in_operator($parsed['operator'], [ '<>', '!=' ]) && strtolower($value) === 'null') {
-                            $query->orWhereNotNull($column);
+                        $nullHandler = FilterParser::handleNullValues($parsed['operator'], $value);
+                        switch ($nullHandler) {
+                            case 'exclude nulls': 	$query->orWhereNotNull($column); break;		// ne|null
+                            case 'return nulls': 	$query->orWhereNull($column); break; 		// eq|null
+                            case 'include nulls' : 	$query->orWhereNull($column); 			  	// ne|any_value
+                            default	:	$query->orWhere($column, $parsed['operator'], $value);	// eq|any_value
                         }
                     }
                 }
