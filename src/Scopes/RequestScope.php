@@ -92,10 +92,10 @@ class RequestScope implements Scope
                         switch ($nullHandler) {
                             case 'exclude nulls': 	$query->orWhereNotNull($column);
 
-                            break;		// ne|null
+                                break;		// ne|null
                             case 'return nulls': 	$query->orWhereNull($column);
 
-                            break; 		// eq|null
+                                break; 		// eq|null
                             case 'include nulls': 	$query->orWhereNull($column); 			  	// ne|any_value
                             // no break
                             default:	$query->orWhere($column, $parsed['operator'], $value);	// eq|any_value
