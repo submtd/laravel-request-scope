@@ -90,10 +90,15 @@ class RequestScope implements Scope
                     } else {
                         $nullHandler = FilterParser::handleNullValues($parsed['operator'], $value);
                         switch ($nullHandler) {
-                            case 'exclude nulls': 	$query->orWhereNotNull($column); break;		// ne|null
-                            case 'return nulls': 	$query->orWhereNull($column); break; 		// eq|null
-                            case 'include nulls' : 	$query->orWhereNull($column); 			  	// ne|any_value
-                            default	:	$query->orWhere($column, $parsed['operator'], $value);	// eq|any_value
+                            case 'exclude nulls': 	$query->orWhereNotNull($column);
+
+                            break;		// ne|null
+                            case 'return nulls': 	$query->orWhereNull($column);
+
+                            break; 		// eq|null
+                            case 'include nulls': 	$query->orWhereNull($column); 			  	// ne|any_value
+                            // no break
+                            default:	$query->orWhere($column, $parsed['operator'], $value);	// eq|any_value
                         }
                     }
                 }

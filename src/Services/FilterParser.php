@@ -212,8 +212,8 @@ class FilterParser
             }
         }
 
-        if ($operator == '=' ) {
-            if($value === 'null') {
+        if ($operator == '=') {
+            if ($value === 'null') {
                 // eq|null
                 return 'return nulls';
             } else {
