@@ -223,6 +223,5 @@ class FilterParser
         }
 
         return 'process value';
-
     }
 }
