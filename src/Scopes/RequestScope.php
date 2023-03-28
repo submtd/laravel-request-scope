@@ -123,7 +123,7 @@ class RequestScope implements Scope
 
     protected function parseIncludes(): void
     {
-        $includes = request()->input(config('laravel-request-scope.includeParameter', 'include'));
+        $includes = request()->input(config('laravel-request-scope.includeParameter', 'include'), '');
         foreach (explode(',', $includes) as $include) {
             if (! $include) {
                 continue;
